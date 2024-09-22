@@ -1,0 +1,70 @@
+/* src/app/styles/calendar.css */
+
+.calendar-container {
+    display: grid;
+    grid-template-columns: 100px repeat(7, 1fr); /* First column for times, then 7 for days */
+    position: relative;
+    height: 600px; /* Set a fixed height for the calendar */
+  }
+  
+    
+  .days-header {
+    grid-column: span 8; /* Make header span all columns including time */
+    display: contents; /* Allow header to align with the grid */
+    
+  }
+  
+  .day-header {
+    background-color: #e0e0e0; /* Light gray background for headers */
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    border-left: 1px solid #ccc; /* Left border for separation */
+  }
+  
+  .day-numbers {
+    grid-column: span 8; /* Make numbers span all columns including time */
+    display: contents; /* Allow alignment with the grid */
+  }
+  
+  .day-number {
+    text-align: center; /* Center align day numbers */
+    padding: 10px;
+    border-left: 1px solid #ccc; /* Left border for separation */
+  }
+  
+  .time-column, .empty-cell {
+    background-color: #f0f0f0; /* Light gray for the time column */
+  }
+  
+  .date-column {
+    position: relative; /* Allow positioning of events */
+    border-left: 1px solid #ccc; /* Left border for separation */
+    height: 100%; /* Full height */
+  }
+  
+  .time-slot {
+    height: 80px; /* Adjust height as needed */
+    position: relative; /* Enable positioning for pseudo-element */
+    text-align: center;
+    padding-right: 10px;
+  }
+  
+  .time-slot::before{
+    content: '';
+    position: absolute;
+    left: 90%;
+    width: calc(100vw - 100%); /* Make it span less than the full width */
+    top: calc(0); /* Position it slightly above the bottom */
+    height: 2px; /* Thickness of the tick line */
+    background: lightgrey; /* Color of the tick line */
+  }
+  
+
+  
+  .time {
+    font-size: 0.9rem; /* Font size for time */
+    position: relative;
+    top: calc(-.75rem);
+  }
+  

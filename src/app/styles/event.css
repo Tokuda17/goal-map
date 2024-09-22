@@ -1,0 +1,20 @@
+/* src/styles/event.css */
+.event-block {
+    position: absolute; /* Position it based on top value */
+    left: 0; /* Align to the left */
+    width: 100%; /* Full width of the column */
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border-radius: 5px; /* Rounded corners */
+    padding: 5px; /* Padding inside the box */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+  }
+  
+  .event-name {
+    font-weight: bold; /* Bold name */
+  }
+  
+  .event-time {
+    font-size: 0.9em; /* Slightly smaller time text */
+  }
+  
