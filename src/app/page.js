@@ -6,7 +6,7 @@ import Calendar from "./components/Calendar";
 export default function Home() {
   return (
     <div>
-      <h1>My Calendar App</h1>
+      <h1>My Calendar App + michael</h1>
       <FixedPlanForm />
       <GoalForm />
       <Calendar />
