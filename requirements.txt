@@ -1,0 +1,8 @@
+axios
+eslint
+eslint-config-next
+next
+postcss
+react
+react-dom
+tailwindcss
