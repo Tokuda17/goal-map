@@ -18,97 +18,54 @@ export default function Calendar() {
     return startOfWeek;
   }
 
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
   const fetchEvents = async () => {
-    const dummyEvents = [
-      {
-        id: 1,
-        name: "Doctor Appointment",
-        date: "2024-09-22T00:00:00",
-        startTime: "10:00 AM",
-        endTime: "11:00 AM",
-      },
-      {
-        id: 2,
-        name: "Class",
-        date: "2024-09-22T00:00:00",
-        startTime: "2:00 PM",
-        endTime: "5:00 PM",
-      },
-      {
-        id: 3,
-        name: "Meeting",
-        date: "2024-09-23T00:00:00",
-        startTime: "11:00 AM",
-        endTime: "12:30 PM",
-      },
-      {
-        id: 4,
-        name: "Workout",
-        date: "2024-09-23T00:00:00",
-        startTime: "6:00 PM",
-        endTime: "7:00 PM",
-      },
-      {
-        id: 5,
-        name: "Lunch with Friends",
-        date: "2024-09-24T00:00:00",
-        startTime: "12:00 PM",
-        endTime: "1:00 PM",
-      },
-      {
-        id: 6,
-        name: "Project Deadline",
-        date: "2024-09-26T00:00:00",
-        startTime: "5:00 PM",
-        endTime: "6:00 PM",
-      },
-      {
-        id: 7,
-        name: "Grocery Shopping",
-        date: "2024-09-27T00:00:00",
-        startTime: "3:00 PM",
-        endTime: "4:00 PM",
-      },
-    ];
-    setEvents(dummyEvents);
-    // Check if dummy events are correct
+    var dummy = await getDjangoAPIData();
+    setEvents(dummy);
+    console.log("dummy", dummy);
   };
 
+  async function getDjangoAPIData() {
+    const response = await fetch("http://127.0.0.1:8000/api/events/");
+    const data = await response.json();
+    return data;
+  }
+
+  async function handleClick() {
+    await getDjangoAPIData();
+  }
+
+  // Convert the time in "HH:MM:SS" format to a percentage for positioning
   const convertTimeToTop = (time) => {
-    const [timePart, period] = time.split(" ");
-    let [hour, minute] = timePart.split(":").map(Number);
-
-    // Adjust hour based on AM/PM
-    if (period === "PM" && hour < 12) {
-      hour += 12;
-    } else if (period === "AM" && hour === 12) {
-      hour = 0;
-    }
-
+    console.log(time);
+    let [hour, minute] = time.split(":").map(Number);
     return ((hour * 60 + minute) / 1440) * 100; // Calculate percentage based on 24 hours
   };
 
-  const convertTimeToHeight = (startTime, endTime) => {
-    const start = startTime.split(" ")[0];
-    const end = endTime.split(" ")[0];
-
+  // Convert the duration between start and end times into a percentage for height
+  const convertTimeToHeight = (start_time, end_time) => {
+    console.log(start_time);
     const startMinutes =
-      parseInt(start.split(":")[0]) * 60 + parseInt(start.split(":")[1]);
+      parseInt(start_time.split(":")[0]) * 60 +
+      parseInt(start_time.split(":")[1]);
     const endMinutes =
-      parseInt(end.split(":")[0]) * 60 + parseInt(end.split(":")[1]);
+      parseInt(end_time.split(":")[0]) * 60 + parseInt(end_time.split(":")[1]);
 
     const durationMinutes = endMinutes - startMinutes;
     return `${(durationMinutes / 1440) * 100}%`; // Calculate height based on total day minutes
   };
 
+  // Renders military time slots (00:00 to 23:00)
   const renderTimeSlots = () => {
     const hourSlots = [];
     for (let hour = 0; hour < 24; hour++) {
-      const amPm = hour >= 12 ? "PM" : "AM";
-      const displayHour = hour % 12 === 0 ? 12 : hour % 12; // Convert to 12-hour format
+      const displayHour = hour.toString().padStart(2, "0"); // Pad hours to be in HH format
       hourSlots.push(
         <div key={hour} className="time-slot">
-          <span className="time">{`${displayHour}:00 ${amPm}`}</span>
+          <span className="time">{`${displayHour}:00`}</span>
         </div>
       );
     }
@@ -130,6 +87,8 @@ export default function Calendar() {
 
   return (
     <div>
+      <button onClick={handleClick}>Test</button>
+
       <h2>Calendar</h2>
       <div className="calendar-container">
         {/* Empty top-left cell */}
@@ -166,17 +125,17 @@ export default function Calendar() {
                 );
               })
               .map((event) => {
-                const startTop = `${convertTimeToTop(event.startTime)}%`;
+                const startTop = `${convertTimeToTop(event.start_time)}%`;
                 const height = convertTimeToHeight(
-                  event.startTime,
-                  event.endTime
+                  event.start_time,
+                  event.end_time
                 );
                 return (
                   <Event
                     key={event.id}
                     name={event.name}
-                    startTime={event.startTime}
-                    endTime={event.endTime}
+                    start_time={event.start_time}
+                    end_time={event.end_time}
                     top={startTop}
                     style={{ height }} // Set height for the event block
                   />

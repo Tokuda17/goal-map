@@ -7,4 +7,4 @@ class Event(models.Model):
     end_time = models.TimeField()
 
     def __str__(self):
-        return self.name
+        return f"{self.name} on {self.date} from {self.start_time} to {self.end_time}"

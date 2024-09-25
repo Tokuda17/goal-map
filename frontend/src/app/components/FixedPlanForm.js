@@ -5,8 +5,8 @@ export default function EventForm() {
   const [formData, setFormData] = useState({
     name: "",
     date: "",
-    startTime: "",
-    endTime: "",
+    start_time: "",
+    end_time: "",
   });
 
   const handleChange = (e) => {
@@ -21,12 +21,11 @@ export default function EventForm() {
     e.preventDefault();
     console.log("handleSubmit");
 
-    const formData = {
-      name: "Event Name",
-      date: "2024-09-25", // Ensure this is in 'YYYY-MM-DD' format
-      startTime: "14:00:00", // Ensure this is in 'HH:MM:SS' format
-      endTime: "16:00:00", // Ensure this is in 'HH:MM:SS' format
-    };
+    const formData = new FormData(e.target);
+    const objectFromForm = Object.fromEntries(formData);
+    const jsonData = JSON.stringify(objectFromForm);
+
+    console.log(jsonData);
 
     try {
       const response = await fetch("http://127.0.0.1:8000/api/events/", {
@@ -34,7 +33,7 @@ export default function EventForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: jsonData,
       });
 
       if (response.ok) {
@@ -43,8 +42,8 @@ export default function EventForm() {
         setFormData({
           name: "",
           date: "",
-          startTime: "",
-          endTime: "",
+          start_time: "",
+          end_time: "",
         });
       } else {
         console.error("Failed to create event");
@@ -83,8 +82,8 @@ export default function EventForm() {
         <label htmlFor="startTime">Start Time:</label>
         <input
           type="time"
-          id="startTime"
-          name="startTime"
+          id="start_time"
+          name="start_time"
           value={formData.startTime}
           onChange={handleChange}
           required
@@ -94,8 +93,8 @@ export default function EventForm() {
         <label htmlFor="endTime">End Time:</label>
         <input
           type="time"
-          id="endTime"
-          name="endTime"
+          id="end_time"
+          name="end_time"
           value={formData.endTime}
           onChange={handleChange}
           required
