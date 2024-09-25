@@ -1,15 +1,12 @@
-// src/app/components/FixedPlanForm.js
-"use client"; // Needed if using hooks
-
+"use client"; // If using hooks or state management in Next.js
 import { useState } from "react";
 
-export default function FixedPlanForm() {
+export default function EventForm() {
   const [formData, setFormData] = useState({
     name: "",
     date: "",
     startTime: "",
     endTime: "",
-    location: "",
   });
 
   const handleChange = (e) => {
@@ -20,10 +17,42 @@ export default function FixedPlanForm() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Here, you would send the data to your backend using fetch or axios
+    console.log("handleSubmit");
+
+    const formData = {
+      name: "Event Name",
+      date: "2024-09-25", // Ensure this is in 'YYYY-MM-DD' format
+      startTime: "14:00:00", // Ensure this is in 'HH:MM:SS' format
+      endTime: "16:00:00", // Ensure this is in 'HH:MM:SS' format
+    };
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/events/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log("Event successfully created!");
+        // Handle success (you can show a success message or clear the form)
+        setFormData({
+          name: "",
+          date: "",
+          startTime: "",
+          endTime: "",
+        });
+      } else {
+        console.error("Failed to create event");
+        // Handle failure
+      }
+    } catch (error) {
+      console.error("An error occurred while creating the event", error);
+    }
   };
 
   return (
@@ -36,11 +65,9 @@ export default function FixedPlanForm() {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Enter event name"
           required
         />
       </div>
-
       <div>
         <label htmlFor="date">Date:</label>
         <input
@@ -52,7 +79,6 @@ export default function FixedPlanForm() {
           required
         />
       </div>
-
       <div>
         <label htmlFor="startTime">Start Time:</label>
         <input
@@ -64,7 +90,6 @@ export default function FixedPlanForm() {
           required
         />
       </div>
-
       <div>
         <label htmlFor="endTime">End Time:</label>
         <input
@@ -76,21 +101,7 @@ export default function FixedPlanForm() {
           required
         />
       </div>
-
-      <div>
-        <label htmlFor="location">Location:</label>
-        <input
-          type="text"
-          id="location"
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-          placeholder="Enter location"
-          required
-        />
-      </div>
-
-      <button type="submit">Add Fixed Plan</button>
+      <button type="submit">Add Mandatory Event</button>
     </form>
   );
 }

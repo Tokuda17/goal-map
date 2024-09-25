@@ -71,18 +71,12 @@ export default function Calendar() {
       },
     ];
     setEvents(dummyEvents);
-    console.log(dummyEvents); // Check if dummy events are correct
+    // Check if dummy events are correct
   };
-
-  useEffect(() => {
-    fetchEvents();
-    console.log(events);
-  }, []);
 
   const convertTimeToTop = (time) => {
     const [timePart, period] = time.split(" ");
     let [hour, minute] = timePart.split(":").map(Number);
-    console.log(time);
 
     // Adjust hour based on AM/PM
     if (period === "PM" && hour < 12) {
