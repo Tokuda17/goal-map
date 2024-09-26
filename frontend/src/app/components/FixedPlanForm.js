@@ -7,6 +7,7 @@ export default function EventForm() {
     date: "",
     start_time: "",
     end_time: "",
+    importance: "high",
   });
 
   const handleChange = (e) => {

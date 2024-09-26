@@ -4,19 +4,43 @@ import { useEffect, useState } from "react";
 import "../styles/calendar.css"; // Use relative path for the CSS file
 import Event from "./Event"; // Import the Event component
 
+//Params: None
+//Return: returns the most recent Sunday
+function getCurrentWeekStart() {
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0 = Sunday
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - dayOfWeek); // Set to the most recent Sunday
+  return startOfWeek;
+}
+
+//Param: Time in "HH:MM:SS"
+//Return: Convert the time in "HH:MM:SS" format to a percentage for positioning
+function convertTimeToTop(time) {
+  console.log(time);
+  let [hour, minute] = time.split(":").map(Number);
+  return ((hour * 60 + minute) / 1440) * 100; // Calculate percentage based on 24 hours
+}
+
+//Params: Start Time and End Time of an Event in "HH:MM:SS"
+//Returns: Percentage of Calender Event should Span
+function convertTimeToHeight(start_time, end_time) {
+  console.log(start_time);
+  const startMinutes =
+    parseInt(start_time.split(":")[0]) * 60 +
+    parseInt(start_time.split(":")[1]);
+  const endMinutes =
+    parseInt(end_time.split(":")[0]) * 60 + parseInt(end_time.split(":")[1]);
+
+  const durationMinutes = endMinutes - startMinutes;
+  return `${(durationMinutes / 1440) * 100}%`; // Calculate height based on total day minutes
+}
+
 export default function Calendar() {
   const [events, setEvents] = useState([]);
   const [currentWeekStart, setCurrentWeekStart] = useState(
     getCurrentWeekStart()
   );
-
-  function getCurrentWeekStart() {
-    const today = new Date();
-    const dayOfWeek = today.getDay(); // 0 = Sunday
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - dayOfWeek); // Set to the most recent Sunday
-    return startOfWeek;
-  }
 
   useEffect(() => {
     fetchEvents();
@@ -37,26 +61,6 @@ export default function Calendar() {
   async function handleClick() {
     await getDjangoAPIData();
   }
-
-  // Convert the time in "HH:MM:SS" format to a percentage for positioning
-  const convertTimeToTop = (time) => {
-    console.log(time);
-    let [hour, minute] = time.split(":").map(Number);
-    return ((hour * 60 + minute) / 1440) * 100; // Calculate percentage based on 24 hours
-  };
-
-  // Convert the duration between start and end times into a percentage for height
-  const convertTimeToHeight = (start_time, end_time) => {
-    console.log(start_time);
-    const startMinutes =
-      parseInt(start_time.split(":")[0]) * 60 +
-      parseInt(start_time.split(":")[1]);
-    const endMinutes =
-      parseInt(end_time.split(":")[0]) * 60 + parseInt(end_time.split(":")[1]);
-
-    const durationMinutes = endMinutes - startMinutes;
-    return `${(durationMinutes / 1440) * 100}%`; // Calculate height based on total day minutes
-  };
 
   // Renders military time slots (00:00 to 23:00)
   const renderTimeSlots = () => {
@@ -117,7 +121,8 @@ export default function Calendar() {
           <div key={date} className="date-column">
             {events
               .filter((event) => {
-                const eventDate = new Date(event.date);
+                const eventDate = new Date(event.date + "T00:00:00"); //Standardize Date
+
                 return (
                   eventDate.getFullYear() === date.getFullYear() &&
                   eventDate.getMonth() === date.getMonth() &&
