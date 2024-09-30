@@ -17,7 +17,6 @@ function getCurrentWeekStart() {
 //Param: Time in "HH:MM:SS"
 //Return: Convert the time in "HH:MM:SS" format to a percentage for positioning
 function convertTimeToTop(time) {
-  console.log(time);
   let [hour, minute] = time.split(":").map(Number);
   return ((hour * 60 + minute) / 1440) * 100; // Calculate percentage based on 24 hours
 }
@@ -25,7 +24,6 @@ function convertTimeToTop(time) {
 //Params: Start Time and End Time of an Event in "HH:MM:SS"
 //Returns: Percentage of Calender Event should Span
 function convertTimeToHeight(start_time, end_time) {
-  console.log(start_time);
   const startMinutes =
     parseInt(start_time.split(":")[0]) * 60 +
     parseInt(start_time.split(":")[1]);
@@ -36,31 +34,10 @@ function convertTimeToHeight(start_time, end_time) {
   return `${(durationMinutes / 1440) * 100}%`; // Calculate height based on total day minutes
 }
 
-export default function Calendar() {
-  const [events, setEvents] = useState([]);
+export default function Calendar({ events }) {
   const [currentWeekStart, setCurrentWeekStart] = useState(
     getCurrentWeekStart()
   );
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  const fetchEvents = async () => {
-    var dummy = await getDjangoAPIData();
-    setEvents(dummy);
-    console.log("dummy", dummy);
-  };
-
-  async function getDjangoAPIData() {
-    const response = await fetch("http://127.0.0.1:8000/api/events/");
-    const data = await response.json();
-    return data;
-  }
-
-  async function handleClick() {
-    await getDjangoAPIData();
-  }
 
   // Renders military time slots (00:00 to 23:00)
   const renderTimeSlots = () => {
@@ -91,8 +68,6 @@ export default function Calendar() {
 
   return (
     <div>
-      <button onClick={handleClick}>Test</button>
-
       <h2>Calendar</h2>
       <div className="calendar-container">
         {/* Empty top-left cell */}

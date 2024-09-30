@@ -1,6 +1,7 @@
 "use client"; // If using hooks or state management in Next.js
 
 import { useState, useEffect } from "react";
+import { getConflict, convertMinutesToTime } from "../utils";
 
 export default function EventForm() {
   const [formData, setFormData] = useState({
@@ -47,6 +48,7 @@ export default function EventForm() {
       console.error("Not enough available slots for the events");
       return; // Not enough slots
     }
+    console.log("availableSlots", availableSlots);
 
     // Create and post events for each available slot
     for (const slot of availableSlots) {
@@ -85,61 +87,48 @@ export default function EventForm() {
     });
   };
 
-  const getAvailableSlots = (events, chunks, chunkDuration) => {
+  function getAvailableSlots(events, chucks, chunkDuration) {
+    const tempEvents = events.slice(); //Keep track of Events that are available without editing original array in case of failure
+
     const availableSlots = [];
-    const totalSlots = 24 * 60; // Total minutes in a day (1440 minutes)
     const bookedSlots = new Set();
 
-    // Helper function to format date as "YYYY-MM-DD"
-    const formatDate = (date) => {
-      return date.toISOString().split("T")[0];
-    };
-
-    // Process booked slots based on existing events
-    events.forEach((event) => {
-      const start = new Date(event.date + "T" + event.start_time);
-      const end = new Date(event.date + "T" + event.end_time);
-      const duration = (end - start) / (1000 * 60); // Duration in minutes
-
-      for (let i = 0; i < duration; i += 30) {
-        bookedSlots.add(start.getMinutes() + i);
-      }
-    });
-
-    // Function to find available slots starting from the current or future dates
-    const findAvailableSlots = (startDate) => {
-      let currentDate = new Date(startDate); // Start from today
-      while (availableSlots.length < chunks) {
-        for (let i = 0; i < totalSlots; i += chunkDuration) {
-          if (!bookedSlots.has(i)) {
-            availableSlots.push({
-              date: formatDate(currentDate),
-              startTime: `${Math.floor(i / 60)}:${(i % 60)
-                .toString()
-                .padStart(2, "0")}`,
-              endTime: `${Math.floor((i + chunkDuration) / 60)}:${(
-                (i + chunkDuration) %
-                60
-              )
-                .toString()
-                .padStart(2, "0")}`,
-            });
-          }
-          if (availableSlots.length === chunks) break; // Stop once we have enough slots
+    for (var i = 0; i < 1440 - chunkDuration; i += 5) {
+      for (var j = 0; j < 7; j++) {
+        const start_time = convertMinutesToTime(i);
+        const end_time = convertMinutesToTime(i + chunkDuration);
+        const today = new Date();
+        var date = new Date(today);
+        date.setDate(today.getDate() + j);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        date = `${year}-${month}-${day}`;
+        if (getConflict(date, start_time, end_time, tempEvents)) {
+          availableSlots.push({
+            date: date,
+            startTime: start_time,
+            endTime: end_time,
+          });
+          tempEvents.push({
+            name: "",
+            start_time: start_time,
+            end_time: end_time,
+            date: date,
+          });
         }
-
-        // Move to the next day if not enough slots are found
-        if (availableSlots.length < chunks) {
-          currentDate.setDate(currentDate.getDate() + 1); // Increment by 1 day
-        }
+        if (availableSlots.length == chucks) return availableSlots;
       }
-    };
+    }
+  }
 
-    // Start searching from the current date
-    findAvailableSlots(new Date());
-
-    return availableSlots;
-  };
+  async function testGetConflict() {
+    const date = "2024-09-25";
+    const start_time = "14:00:00";
+    const end_time = "15:30:00";
+    const events = existingEvents;
+    getAvailableSlots(events, 6, 30);
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -179,6 +168,8 @@ export default function EventForm() {
         </select>
       </div>
       <button type="submit">Add Goal</button>
+      <br></br>
+      <button onClick={testGetConflict}>Test Get Conflict</button>
     </form>
   );
 }
