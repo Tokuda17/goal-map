@@ -1,67 +1,56 @@
-"use client";
+// frontend/src/app/login/page.js
+"use client"; // This directive is correct for client-side rendering in Next.js
 
-import { useState } from "react";
+//import { cookies } from "next/headers";
+
+import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
 
-export default function Login() {
+const LOGIN_URL = "/api/login/";
+
+export default function LoginPage() {
+  // Handle login form submission
+
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
-  const [errorMessage, setErrorMessage] = useState("");
+  async function handleLogin(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const objectFromForm = Object.fromEntries(formData);
+    const jsonData = JSON.stringify(objectFromForm);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonData,
+    };
+    const response = await fetch(LOGIN_URL, requestOptions);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("http://127.0.0.1:8000/users/api/login/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        alert("Login successful!");
-        // Save the token (for example, in localStorage or cookie)
-        localStorage.setItem("token", data.token);
-        router.push("/"); // Redirect to some protected page
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.error || "Invalid credentials");
-      }
-    } catch (error) {
-      setErrorMessage("An error occurred while logging in.");
+    if (response.ok) {
+      const rData = await response.json();
+      console.log(rData);
+      router.replace("/");
     }
-  };
+  }
 
   return (
     <div>
       <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-        />
+      <form onSubmit={handleLogin}>
+        <div>
+          <label htmlFor="username">Username</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+
+        <div>
+          <label htmlFor="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+
         <button type="submit">Login</button>
       </form>
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );
 }

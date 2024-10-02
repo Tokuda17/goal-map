@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import "../styles/calendar.css"; // Use relative path for the CSS file
 import Event from "./Event"; // Import the Event component
-
 //Params: None
 //Return: returns the most recent Sunday
 function getCurrentWeekStart() {
@@ -94,7 +93,7 @@ export default function Calendar({ events }) {
         {/* Render days of the week */}
         {weekDates.map((date, index) => (
           <div key={date} className="date-column">
-            {events
+            {(Array.isArray(events) ? events : [])
               .filter((event) => {
                 const eventDate = new Date(event.date + "T00:00:00"); //Standardize Date
 

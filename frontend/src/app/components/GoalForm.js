@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { getConflict, convertMinutesToTime } from "../utils";
 
-export default function EventForm() {
+export default function EventForm({ events }) {
   const [formData, setFormData] = useState({
     name: "",
     minutesPerWeek: "",
@@ -30,52 +30,102 @@ export default function EventForm() {
     }));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const totalMinutes = parseInt(formData.minutesPerWeek);
+  //   const chunks = Math.ceil(totalMinutes / 30); // Number of 30-minute chunks
+  //   const chunkDuration = 30; // Duration of each chunk in minutes
+
+  //   // Find available time slots for the events
+  //   const availableSlots = getAvailableSlots(
+  //     existingEvents,
+  //     chunks,
+  //     chunkDuration
+  //   );
+
+  //   if (availableSlots.length < chunks) {
+  //     console.error("Not enough available slots for the events");
+  //     return; // Not enough slots
+  //   }
+  //   console.log("availableSlots", availableSlots);
+
+  //   // Create and post events for each available slot
+  //   for (const slot of availableSlots) {
+  //     const eventData = {
+  //       name: formData.name,
+  //       date: slot.date, // Assuming date is part of the slot object
+  //       start_time: slot.startTime,
+  //       end_time: slot.endTime,
+  //     };
+  //     console.log("event", eventData);
+
+  //     const jsonData = JSON.stringify(eventData);
+
+  //     console.log(jsonData);
+
+  //     const response = await fetch("http://127.0.0.1:8000/api/events/", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(eventData),
+  //     });
+
+  //     if (response.ok) {
+  //       console.log("Event successfully created!", eventData);
+  //     } else {
+  //       console.error("Failed to create event", eventData);
+  //     }
+  //   }
+
+  //   // Reset the form
+  //   setFormData({
+  //     name: "",
+  //     minutesPerWeek: "",
+  //     importance: "medium",
+  //   });
+  // };
+  // goalform.js
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const totalMinutes = parseInt(formData.minutesPerWeek);
     const chunks = Math.ceil(totalMinutes / 30); // Number of 30-minute chunks
-    const chunkDuration = 30; // Duration of each chunk in minutes
 
-    // Find available time slots for the events
-    const availableSlots = getAvailableSlots(
-      existingEvents,
-      chunks,
-      chunkDuration
-    );
+    // Fetch available slots and create events
+    const availableSlots = getAvailableSlots(existingEvents, chunks, 30);
 
     if (availableSlots.length < chunks) {
       console.error("Not enough available slots for the events");
       return; // Not enough slots
     }
-    console.log("availableSlots", availableSlots);
 
-    // Create and post events for each available slot
     for (const slot of availableSlots) {
       const eventData = {
         name: formData.name,
-        date: slot.date, // Assuming date is part of the slot object
+        date: slot.date,
         start_time: slot.startTime,
         end_time: slot.endTime,
       };
-      console.log("event", eventData);
 
-      const jsonData = JSON.stringify(eventData);
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/events/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        });
 
-      console.log(jsonData);
-
-      const response = await fetch("http://127.0.0.1:8000/api/events/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
-
-      if (response.ok) {
-        console.log("Event successfully created!", eventData);
-      } else {
-        console.error("Failed to create event", eventData);
+        if (response.ok) {
+          console.log("Event successfully created!", eventData);
+        } else {
+          console.error("Failed to create event", eventData);
+        }
+      } catch (error) {
+        console.error("Error creating event:", error);
       }
     }
 
@@ -88,8 +138,8 @@ export default function EventForm() {
   };
 
   function getAvailableSlots(events, chucks, chunkDuration) {
-    const tempEvents = events.slice(); //Keep track of Events that are available without editing original array in case of failure
-
+    var tempEvents = events.results;
+    console.log(tempEvents);
     const availableSlots = [];
     const bookedSlots = new Set();
 

@@ -8,15 +8,17 @@ import Calendar from "./components/Calendar";
 
 export default function Home() {
   const [events, setEvents] = useState([]);
-  useEffect(() => {
-    fetchEvents();
-  }, []);
 
-  const fetchEvents = async () => {
-    var dummy = await getDjangoAPIData();
-    setEvents(dummy);
-    console.log("dummy", dummy);
-  };
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const data = getDjangoAPIData();
+        setEvents(data); // Set events only for the logged-in user
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+  }, []);
 
   async function getDjangoAPIData() {
     const response = await fetch("http://127.0.0.1:8000/api/events/");
@@ -32,7 +34,7 @@ export default function Home() {
     <div>
       <h1>My Calendar App</h1>
       <FixedPlanForm />
-      <GoalForm />
+      <GoalForm event={events} />
       <button onClick={reloadData}>Reload Data</button>
       <Calendar events={events} />
     </div>
