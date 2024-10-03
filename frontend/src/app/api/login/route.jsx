@@ -32,6 +32,8 @@ export async function POST(request) {
     const authToken = responseData.token;
     console.log(authToken)
     setToken(authToken)
+    return NextResponse.json({"Log in": true}, { status: 200 });
+
   }
-  return NextResponse.json({"Log in": "Success"}, { status: 200 });
+  return NextResponse.json({"Log In": false}, {status: 400})
 }

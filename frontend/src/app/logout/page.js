@@ -10,6 +10,7 @@ const LOGOUT_URL = "/api/logout/";
 export default function LoginPage() {
   const router = useRouter();
   async function handleClick(event) {
+    console.log(event);
     event.preventDefault();
 
     const requestOptions = {

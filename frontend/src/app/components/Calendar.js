@@ -113,6 +113,7 @@ export default function Calendar({ events }) {
                   <Event
                     key={event.id}
                     name={event.name}
+                    date={event.date}
                     start_time={event.start_time}
                     end_time={event.end_time}
                     top={startTop}

@@ -1,7 +1,10 @@
 "use client"; // If using hooks or state management in Next.js
 import { useState } from "react";
+import { addEvent, deleteEvent, getEvents } from "./Event";
 
-export default function EventForm() {
+const EVENT_URL = "/api/events";
+
+export default function EventForm({ onEventsAdded }) {
   const [formData, setFormData] = useState({
     name: "",
     date: "",
@@ -11,11 +14,7 @@ export default function EventForm() {
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -23,35 +22,29 @@ export default function EventForm() {
     console.log("handleSubmit");
 
     const formData = new FormData(e.target);
-    const objectFromForm = Object.fromEntries(formData);
-    const jsonData = JSON.stringify(objectFromForm);
+    const event = Object.fromEntries(formData);
 
-    console.log(jsonData);
+    const response = addEvent(
+      event.name,
+      event.date,
+      event.start_time,
+      event.end_time
+    );
 
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/events/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonData,
+    if (response) {
+      console.log("Event successfully created!");
+      // Handle success (you can show a success message or clear the form)
+      setFormData({
+        name: "",
+        date: "",
+        start_time: "",
+        end_time: "",
       });
 
-      if (response.ok) {
-        console.log("Event successfully created!");
-        // Handle success (you can show a success message or clear the form)
-        setFormData({
-          name: "",
-          date: "",
-          start_time: "",
-          end_time: "",
-        });
-      } else {
-        console.error("Failed to create event");
-        // Handle failure
-      }
-    } catch (error) {
-      console.error("An error occurred while creating the event", error);
+      onEventsAdded();
+    } else {
+      console.error("Failed to create event");
+      // Handle failure
     }
   };
 

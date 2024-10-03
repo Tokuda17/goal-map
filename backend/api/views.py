@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.response import Response
 from rest_framework import status, mixins, generics, permissions
@@ -21,17 +21,31 @@ from .permissions import IsOwnerOrReadOnly
 
 
 class EventList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    queryset = Event.objects.all()
+    authentication_classes = [TokenAuthentication]  # Ensure token auth
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]  # User must be authenticated
+
+    def get_queryset(self):
+        # Return only events that belong to the authenticated user
+        user = self.request.user
+        return Event.objects.filter(owner=user)
+
     serializer_class = EventSerializer
 
     def perform_create(self, serializer):
+        # Automatically associate the logged-in user with the event
         serializer.save(owner=self.request.user)
+
     
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    authentication_classes = [TokenAuthentication]
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+    def perform_destroy(self, instance):
+        if instance.owner != self.request.user:
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        instance.delete()
+        return Response({"Delete": True}, status=status.HTTP_200_OK)
 
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()

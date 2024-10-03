@@ -1,26 +1,17 @@
 "use client"; // If using hooks or state management in Next.js
 
 import { useState, useEffect } from "react";
+import { addEvent, deleteEvent, getEvents } from "./Event";
 import { getConflict, convertMinutesToTime } from "../utils";
 
-export default function EventForm({ events }) {
+const EVENT_URL = "/api/events";
+
+export default function EventForm({ onEventsAdded }) {
   const [formData, setFormData] = useState({
     name: "",
     minutesPerWeek: "",
     importance: "medium", // Default importance
   });
-  const [existingEvents, setExistingEvents] = useState([]);
-
-  useEffect(() => {
-    // Fetch existing events to find available slots
-    const fetchEvents = async () => {
-      const response = await fetch("http://127.0.0.1:8000/api/events/");
-      const data = await response.json();
-      setExistingEvents(data);
-    };
-
-    fetchEvents();
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,64 +20,6 @@ export default function EventForm({ events }) {
       [name]: value,
     }));
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const totalMinutes = parseInt(formData.minutesPerWeek);
-  //   const chunks = Math.ceil(totalMinutes / 30); // Number of 30-minute chunks
-  //   const chunkDuration = 30; // Duration of each chunk in minutes
-
-  //   // Find available time slots for the events
-  //   const availableSlots = getAvailableSlots(
-  //     existingEvents,
-  //     chunks,
-  //     chunkDuration
-  //   );
-
-  //   if (availableSlots.length < chunks) {
-  //     console.error("Not enough available slots for the events");
-  //     return; // Not enough slots
-  //   }
-  //   console.log("availableSlots", availableSlots);
-
-  //   // Create and post events for each available slot
-  //   for (const slot of availableSlots) {
-  //     const eventData = {
-  //       name: formData.name,
-  //       date: slot.date, // Assuming date is part of the slot object
-  //       start_time: slot.startTime,
-  //       end_time: slot.endTime,
-  //     };
-  //     console.log("event", eventData);
-
-  //     const jsonData = JSON.stringify(eventData);
-
-  //     console.log(jsonData);
-
-  //     const response = await fetch("http://127.0.0.1:8000/api/events/", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(eventData),
-  //     });
-
-  //     if (response.ok) {
-  //       console.log("Event successfully created!", eventData);
-  //     } else {
-  //       console.error("Failed to create event", eventData);
-  //     }
-  //   }
-
-  //   // Reset the form
-  //   setFormData({
-  //     name: "",
-  //     minutesPerWeek: "",
-  //     importance: "medium",
-  //   });
-  // };
-  // goalform.js
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -103,30 +36,7 @@ export default function EventForm({ events }) {
     }
 
     for (const slot of availableSlots) {
-      const eventData = {
-        name: formData.name,
-        date: slot.date,
-        start_time: slot.startTime,
-        end_time: slot.endTime,
-      };
-
-      try {
-        const response = await fetch("http://127.0.0.1:8000/api/events/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(eventData),
-        });
-
-        if (response.ok) {
-          console.log("Event successfully created!", eventData);
-        } else {
-          console.error("Failed to create event", eventData);
-        }
-      } catch (error) {
-        console.error("Error creating event:", error);
-      }
+      addEvent(formData.name, slot.date, slot.start_time, slot.end_time);
     }
 
     // Reset the form
@@ -135,10 +45,11 @@ export default function EventForm({ events }) {
       minutesPerWeek: "",
       importance: "medium",
     });
+    onEventsAdded();
   };
 
   function getAvailableSlots(events, chucks, chunkDuration) {
-    var tempEvents = events.results;
+    var tempEvents = getEvents();
     console.log(tempEvents);
     const availableSlots = [];
     const bookedSlots = new Set();
@@ -170,14 +81,6 @@ export default function EventForm({ events }) {
         if (availableSlots.length == chucks) return availableSlots;
       }
     }
-  }
-
-  async function testGetConflict() {
-    const date = "2024-09-25";
-    const start_time = "14:00:00";
-    const end_time = "15:30:00";
-    const events = existingEvents;
-    getAvailableSlots(events, 6, 30);
   }
 
   return (
@@ -218,8 +121,6 @@ export default function EventForm({ events }) {
         </select>
       </div>
       <button type="submit">Add Goal</button>
-      <br></br>
-      <button onClick={testGetConflict}>Test Get Conflict</button>
     </form>
   );
 }
