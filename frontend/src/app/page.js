@@ -21,6 +21,7 @@ export default function Home() {
         </Link>
         <p className="home-slogan">#1 App To Improve Time Management.</p>
       </div>
+      <div>TESTER</div>
     </div>
   );
 }
