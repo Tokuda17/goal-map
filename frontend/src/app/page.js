@@ -3,37 +3,24 @@
 
 import { useState, useEffect } from "react";
 import { getEvents } from "./components/Event";
-import FixedPlanForm from "./components/FixedPlanForm";
-import GoalForm from "./components/GoalForm";
-import Calendar from "./components/Calendar";
+import Button from "./components/Button";
+import "./styles/home.css";
+import Link from "next/link";
 
 const EVENTS_URL = "/api/events/";
 
 export default function Home() {
-  const [events, setEvents] = useState([]);
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  async function fetchEvents() {
-    setEvents(await getEvents());
-  }
-
-  console.log(events);
-
   return (
-    <div>
-      <h1>My Calendar App</h1>
-      <nav>
-        <a href="/signup">SignUp </a>
-        <a href="/login">login </a>
-        <a href="/logout">logout </a>
-      </nav>
-      <FixedPlanForm onEventsAdded={fetchEvents} />
-      <GoalForm onEventsAdded={fetchEvents} />
-      <button onClick={fetchEvents}>Reload Data</button>
-      <Calendar events={events} />
+    <div className="home-container">
+      <div className="home-top">
+        <p className="home-slogan">Effortless Scheduling with AI</p>
+        <h1 className="home-title">Habit Builder</h1>
+
+        <Link className="home-signup" href="/signup">
+          <Button name="Sign Up" />
+        </Link>
+        <p className="home-slogan">#1 App To Improve Time Management.</p>
+      </div>
     </div>
   );
 }

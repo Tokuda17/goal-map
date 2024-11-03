@@ -24,7 +24,7 @@ export default function LoginPage() {
 
     if (response.ok) {
       const rData = await response.json();
-      router.replace("/login");
+      router.replace("/");
       console.log("logged out");
     }
   }

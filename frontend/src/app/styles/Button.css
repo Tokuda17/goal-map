@@ -1,0 +1,17 @@
+.button-template{
+    font-size: 2rem;
+    padding: 6px 14px;
+    margin: 2px;
+    cursor: pointer;
+    background-color: var(--mint-color);
+    color: black;
+    border-radius: 20px;
+    border: 2px solid black;
+    transition: all .3s ease;
+}
+
+.button-template:hover{
+    opacity: 75%;
+}
+  
+  

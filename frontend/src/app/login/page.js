@@ -31,7 +31,7 @@ export default function LoginPage() {
     if (response.ok) {
       const rData = await response.json();
       console.log(rData);
-      router.replace("/");
+      router.replace("/calendar");
     }
   }
 
