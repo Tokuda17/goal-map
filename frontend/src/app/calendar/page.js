@@ -6,6 +6,7 @@ import { getEvents } from "../components/Event";
 import FixedPlanForm from "../components/FixedPlanForm";
 import GoalForm from "../components/GoalForm";
 import Calendar from "../components/Calendar";
+import Chat from "../components/Chat";
 
 const EVENTS_URL = "/api/events/";
 
@@ -33,6 +34,7 @@ export default function Home() {
       <FixedPlanForm onEventsAdded={fetchEvents} />
       <GoalForm onEventsAdded={fetchEvents} />
       <button onClick={fetchEvents}>Reload Data</button>
+      <Chat />
       <Calendar events={events} />
     </div>
   );
