@@ -37,3 +37,31 @@ function timeToDecimal(time) {
   const seconds = parseInt(timeParts[2], 10);
   return hours + minutes / 60 + seconds / 3600;
 }
+
+export function convertDayWeekToDate(dayOfWeek) {
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const targetDayIndex = daysOfWeek.indexOf(dayOfWeek);
+
+  const today = new Date();
+  const todayIndex = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+
+  // Calculate the difference in days from today to the target day
+  const diff = targetDayIndex - todayIndex;
+  const targetDate = new Date(today);
+  targetDate.setDate(today.getDate() + diff);
+
+  // Format the date in yyyy-mm-dd
+  const year = targetDate.getFullYear();
+  const month = String(targetDate.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const day = String(targetDate.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}

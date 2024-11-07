@@ -1,6 +1,7 @@
 // pages/index.js
 import { useState } from "react";
-import axios from "axios";
+import { addEvent, getEvents } from "./Event";
+import { convertDayWeekToDate } from "../utils";
 
 export default function Chat() {
   const [input, setInput] = useState("");
@@ -13,18 +14,44 @@ export default function Chat() {
     setMessages([...messages, { role: "user", content: input }]);
     setInput("");
 
+    const currentEvents = getEvents();
+
     try {
-      const response = await axios.post("/api/chat", { message: input });
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: input, events: currentEvents }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      const events = data.response.events;
+      console.log("Events", events);
+      for (var i = 0; i < events.length; i++) {
+        const e = events[i];
+        const date = convertDayWeekToDate(e.date);
+        addEvent(e.name, date, e.start_time, e.end_time);
+      }
+      const eventString = JSON.stringify(data.response);
+
       // Display chatbot's response
-      setMessages([
-        ...messages,
+      setMessages((prevMessages) => [
+        ...prevMessages,
         { role: "user", content: input },
-        { role: "assistant", content: response.data.response },
+        {
+          role: "assistant",
+          content: eventString,
+        },
       ]);
     } catch (error) {
       console.error("Error:", error);
-      setMessages([
-        ...messages,
+      setMessages((prevMessages) => [
+        ...prevMessages,
         { role: "user", content: input },
         { role: "assistant", content: "Sorry, something went wrong." },
       ]);
