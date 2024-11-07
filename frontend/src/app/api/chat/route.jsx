@@ -21,7 +21,7 @@ export async function POST(req) {
   const jsonData = await req.json();
   const message = jsonData.message;
   const currentEvents = jsonData.currentEvents;
-
+  return
   console.log("POSTING");
   const completion = await openai.beta.chat.completions.parse({
     model: "gpt-4o-2024-08-06",
