@@ -1,6 +1,6 @@
 "use server";
 
-import { getToken, setRefreshToken, setToken } from "@/app/hooks/useAuth";
+import { getToken, setRefreshToken, setToken } from "../../hooks/useAuth";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 

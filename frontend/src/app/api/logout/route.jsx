@@ -1,4 +1,4 @@
-import { deleteToken } from "@/app/hooks/useAuth"
+import { deleteToken } from "../../hooks/useAuth";
 import { NextResponse } from "next/server"
 
 export async function POST(request){
