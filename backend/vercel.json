@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "env": {
+    "DJANGO_SETTINGS_MODULE": "backend.settings"
+  }
+}
