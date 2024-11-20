@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+const LOCALHOST = "http://127.0.0.1:8000/api/signup/";
+const DEPLOYMENT = "http://ru-busy-backend.vercel.app/api/signup/";
+
 export default function Signup() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -19,7 +22,7 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/signup/", {
+      const response = await fetch(DEPLOYMENT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
