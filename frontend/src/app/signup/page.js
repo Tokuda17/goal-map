@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const LOCALHOST = "http://127.0.0.1:8000/api/signup/";
-const DEPLOYMENT = "http://ru-busy-backend.vercel.app/api/signup/";
+const DEPLOYMENT = "https://ru-busy-backend.vercel.app/api/signup/";
 
 export default function Signup() {
   const router = useRouter();
