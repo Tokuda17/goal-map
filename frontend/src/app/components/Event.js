@@ -15,7 +15,7 @@ export async function getEvents() {
 
   if (response.ok) {
     const responseData = await response.json();
-    console.log(responseData);
+    console.log("Get Events Success");
     return responseData.events;
   }
 }

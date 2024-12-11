@@ -4,13 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const LOCALHOST = "http://127.0.0.1:8000/api/signup/";
-const DEPLOYMENT = "https://ru-busy-backend.vercel.app/api/signup/";
+const DEPLOYMENT = "http://ru-busy-backend.vercel.app/api/signup/";
 
 export default function Signup() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     username: "",
-    email: "",
     password: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
@@ -20,9 +19,10 @@ export default function Signup() {
   };
 
   const handleSubmit = async (e) => {
+    console.log(formData);
     e.preventDefault();
     try {
-      const response = await fetch(DEPLOYMENT, {
+      const response = await fetch("http://127.0.0.1:8000/api/signup/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

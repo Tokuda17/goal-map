@@ -8,5 +8,11 @@
   ],
   "env": {
     "DJANGO_SETTINGS_MODULE": "backend.settings"
-  }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "backend/wsgi.py"
+    }
+  ]
 }
