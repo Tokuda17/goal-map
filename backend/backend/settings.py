@@ -60,7 +60,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Allow requests from your Next.js frontend
+    "http://localhost:3000", "http://goal-map.vercel.app",  # Allow requests from your Next.js frontend
 ]
 
 
