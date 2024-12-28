@@ -4,7 +4,8 @@ import { getToken, setRefreshToken, setToken } from "../../hooks/useAuth";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const DJANGO_API_EVENT_URL = "http://127.0.0.1:8000/api/events/"
+const DJANGO_API_EVENT_URL_LOCALHOST = "http://127.0.0.1:8000/api/events/"
+const DJANGO_API_EVENT_URL = "http://3.19.134.198/api/events/"
 
 export async function GET(request) {
   const token = getToken();

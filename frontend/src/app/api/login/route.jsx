@@ -4,7 +4,8 @@ import { getToken, setRefreshToken, setToken } from "../../hooks/useAuth";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const DJANGO_API_LOGIN_URL = "http://127.0.0.1:8000/api/users/login";
+const DJANGO_API_LOGIN_URL_LOCAL = "http://127.0.0.1:8000/api/users/login";
+const DJANGO_API_LOGIN_URL = "http://3.19.134.198/api/users/login";
 
 export async function POST(request) {
   const myAuthToken = getToken()
