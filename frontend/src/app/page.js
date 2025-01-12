@@ -14,7 +14,7 @@ export default function Home() {
     <div className="home-container">
       <div className="home-top">
         <p className="home-slogan">Effortless Scheduling with AI</p>
-        <h1 className="home-title">Habit Builder</h1>
+        <h1 className="home-title">RU Busy</h1>
 
         <Link className="home-signup" href="/signup">
           <Button name="Sign Up" />

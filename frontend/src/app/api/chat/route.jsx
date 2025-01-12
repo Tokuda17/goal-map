@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+
+//Define JSON data for OpenAI
 const CalendarEvent = z.object({
   name: z.string(),
   date: z.string(),
@@ -13,17 +15,27 @@ const CalendarEvent = z.object({
   duration: z.number(),
 });
 
+//Create an Array of Event. 
 const Events = z.object({
   events: z.array(CalendarEvent),
 });
 
+//Params:
+//req.message: String -> message passed in by user to AI 
+//req.currentEvents: Array -> List of event already in calendar
+//Return:
+//Array of Events
 export async function POST(req) {
   const jsonData = await req.json();
   const message = jsonData.message;
   const currentEvents = jsonData.currentEvents;
   console.log("POSTING");
+
+  //Sends API requets to openAI
   const completion = await openai.beta.chat.completions.parse({
     model: "gpt-4o-2024-08-06",
+
+    //Prompting the Model to send a response
     messages: [
       {
         role: "system",
@@ -60,5 +72,7 @@ export async function POST(req) {
 
   const events = completion.choices[0].message.parsed;
   console.log(events);
+
+  //Returns Events
   return NextResponse.json({ response: events }, { status: 200 });
 }

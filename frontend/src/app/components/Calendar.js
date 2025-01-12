@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import "../styles/calendar.css"; // Use relative path for the CSS file
 import Event from "./Event"; // Import the Event component
+
 //Params: None
 //Return: returns the most recent Sunday
 function getCurrentWeekStart() {

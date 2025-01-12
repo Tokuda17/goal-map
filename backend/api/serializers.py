@@ -2,6 +2,9 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Event
 
+
+#Create Serializers to ensure that Data passed in is valid 
+
 class EventSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source="owner.username")
     class Meta:

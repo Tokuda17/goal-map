@@ -3,6 +3,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
 
+
+#Defines /api/ paths to make the API calls
 urlpatterns = format_suffix_patterns([
     path('', views.api_root),
     path('events/',
@@ -23,6 +25,4 @@ urlpatterns = format_suffix_patterns([
     path('users/login', 
          views.LoginView.as_view(), 
          name='login'),
-    
-
 ])

@@ -22,7 +22,7 @@ export default function Signup() {
     console.log(formData);
     e.preventDefault();
     try {
-      const response = await fetch(DEPLOYMENT, {
+      const response = await fetch(LOCALHOST, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

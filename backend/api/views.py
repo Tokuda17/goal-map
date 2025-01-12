@@ -58,11 +58,12 @@ class UserDetail(generics.RetrieveAPIView):
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
+    #Checks to see if username and password exist in the DB
     def post(self, request, format=None):
         username = request.data.get("username")
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
-
+        
         if user is not None:
             # Generate or retrieve the token
             token, created = Token.objects.get_or_create(user=user)
@@ -75,11 +76,14 @@ class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = []  # Allow any user to sign up
 
+    #post attempts to create a new user
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()  # Save the new user
             return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+        
+        #Return Error is user cannot be added 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 

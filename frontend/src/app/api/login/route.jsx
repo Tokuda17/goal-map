@@ -7,13 +7,10 @@ import { NextResponse } from "next/server";
 const DJANGO_API_LOGIN_URL_LOCAL = "http://127.0.0.1:8000/api/users/login";
 const DJANGO_API_LOGIN_URL = "http://3.19.134.198:8000/api/users/login";
 
-export async function POST(request) {
-  const myAuthToken = getToken()
-  console.log(myAuthToken)
-  
-  const requestData = await request.json();
 
-  
+//Post Login for authentication
+export async function POST(request) {  
+  const requestData = await request.json();
 
   const jsonData = JSON.stringify(requestData);
   const requestOptions = {
@@ -23,18 +20,12 @@ export async function POST(request) {
     },
     body: jsonData
   };
-
-  const response = await fetch(DJANGO_API_LOGIN_URL, requestOptions);
+  const response = await fetch(DJANGO_API_LOGIN_URL_LOCAL, requestOptions);
   const responseData = await response.json();
-  
- 
   if (response.ok) {
-    
     const authToken = responseData.token;
-    console.log(authToken)
     setToken(authToken)
     return NextResponse.json({"Log in": true}, { status: 200 });
-
   }
   return NextResponse.json({"Log In": false}, {status: 400})
 }

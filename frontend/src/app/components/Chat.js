@@ -7,16 +7,20 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
 
+  //Sends Response to /api/chat
   const sendMessage = async () => {
     if (!input) return;
 
     // Display user's message
     setMessages([...messages, { role: "user", content: input }]);
+    // Resets form to blank
     setInput("");
 
+    // Gets events already in Calendar
     const currentEvents = getEvents();
 
     try {
+      //Send API call to /api/chat
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -29,6 +33,7 @@ export default function Chat() {
         throw new Error("Network response was not ok");
       }
 
+      //Gets response and adds Events to Calendar
       const data = await response.json();
       const events = data.response.events;
       console.log("Events", events);
