@@ -4,8 +4,7 @@ import { getToken, setRefreshToken, setToken } from "../../hooks/useAuth";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const DJANGO_API_LOGIN_URL_LOCAL = "http://127.0.0.1:8000/api/users/login";
-const DJANGO_API_LOGIN_URL = "http://3.19.134.198:8000/api/users/login";
+const DJANGO_API_LOGIN_URL = process.env.NEXT_PUBLIC_API + "/api/users/login"
 
 
 //Post Login for authentication
@@ -20,7 +19,7 @@ export async function POST(request) {
     },
     body: jsonData
   };
-  const response = await fetch(DJANGO_API_LOGIN_URL_LOCAL, requestOptions);
+  const response = await fetch(DJANGO_API_LOGIN_URL, requestOptions);
   const responseData = await response.json();
   if (response.ok) {
     const authToken = responseData.token;

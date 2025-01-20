@@ -4,15 +4,16 @@ import { getToken, setRefreshToken, setToken } from "../../hooks/useAuth";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const DJANGO_API_EVENT_URL_LOCALHOST = "http://127.0.0.1:8000/api/events/"
-const DJANGO_API_EVENT_URL = "http://3.19.134.198:8000/api/events/"
+const DJANGO_API_EVENT_URL = process.env.NEXT_PUBLIC_API + "/api/events/"
+
+
 
 export async function GET(request) {
   const token = getToken();
   // Get the token using your getToken function
 
   // Send API request GET to get Users
-  const response = await fetch(DJANGO_API_EVENT_URL_LOCALHOST, {
+  const response = await fetch(DJANGO_API_EVENT_URL, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -53,7 +54,7 @@ export async function POST(request){
   };
 
   //Await Post response 
-  const response = await fetch(DJANGO_API_EVENT_URL_LOCALHOST, requestOptions);
+  const response = await fetch(DJANGO_API_EVENT_URL, requestOptions);
   const responseData = await response.json();
 
 

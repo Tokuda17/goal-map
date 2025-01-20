@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const LOCALHOST = "http://127.0.0.1:8000/api/signup/";
-const DEPLOYMENT = "http://3.19.134.198:8000/api/signup/";
+const LOCALHOST = process.env.NEXT_PUBLIC_API + "/api/signup/";
 
 export default function Signup() {
   const router = useRouter();

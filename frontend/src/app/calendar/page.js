@@ -14,9 +14,7 @@ const EVENTS_URL = "/api/events/";
 export default function Home() {
   const [events, setEvents] = useState([]);
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  useEffect(() => {}, [events]);
 
   async function fetchEvents() {
     setEvents(await getEvents());
